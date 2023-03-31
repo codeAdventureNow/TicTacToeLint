@@ -14,7 +14,7 @@ function App() {
   const [availableSquares, setAvailableSquares] = useState(allSquaresOpen);
   const [status, setStatus] = useState(`Next player: ${xIsNext ? 'X' : '0'}`);
 
-  function calculateWinner(squares) {
+  function calculateWinner(square) {
     const lines = [
       [0, 1, 2],
       [3, 4, 5],
@@ -27,11 +27,7 @@ function App() {
     ];
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
-      if (
-        squares[a] &&
-        squares[a] === squares[b] &&
-        squares[a] === squares[c]
-      ) {
+      if (square[a] && square[a] === square[b] && square[a] === square[c]) {
         return squares[a];
       }
     }
@@ -39,6 +35,16 @@ function App() {
   }
 
   const winner = calculateWinner(squares);
+
+  const handleReset = useCallback(() => {
+    setComputerTurn(false);
+    setXIsNext('X');
+    setSquares(Array(9).fill(null));
+    setChooseTeam(true);
+    setTeam('X');
+    setAvailableSquares(allSquaresOpen);
+    setStatus(`Next player: ${xIsNext ? 'X' : '0'}`);
+  }, [xIsNext]);
 
   useEffect(() => {
     if (winner) {
@@ -54,22 +60,18 @@ function App() {
     } else {
       setStatus(`Next player: ${xIsNext ? 'X' : '0'}`);
     }
-  }, [winner, xIsNext, squares, status]);
+  }, [winner, xIsNext, squares, status, handleReset]);
 
   const handleSquareClick = useCallback(
     (i, computerChoose) => {
-      if (winner !== null) return;
+      // if (winner !== null) return;
       const nextSquares = squares.slice();
 
       const nextAvailableSquares = availableSquares.filter(
         (square) => square !== i
       );
 
-      if (xIsNext) {
-        nextSquares[i] = 'X';
-      } else {
-        nextSquares[i] = 'O';
-      }
+      nextSquares[i] = xIsNext ? 'X' : 'O';
 
       setSquares(nextSquares);
       setXIsNext(!xIsNext);
@@ -101,16 +103,6 @@ function App() {
       setXIsNext(false);
       setTeam('O');
     }
-  }
-
-  function handleReset() {
-    setComputerTurn(false);
-    setXIsNext('X');
-    setSquares(Array(9).fill(null));
-    setChooseTeam(true);
-    setTeam('X');
-    setAvailableSquares(allSquaresOpen);
-    setStatus(`Next player: ${xIsNext ? 'X' : '0'}`);
   }
 
   return (
