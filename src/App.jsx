@@ -12,7 +12,7 @@ function App() {
   const [team, setTeam] = useState('X');
   const [computerTurn, setComputerTurn] = useState(false);
   const [availableSquares, setAvailableSquares] = useState(allSquaresOpen);
-  const [status, setStatus] = useState('Next player: ' + (xIsNext ? 'X' : '0'));
+  const [status, setStatus] = useState(`Next player: ${xIsNext ? 'X' : '0'}`);
 
   function calculateWinner(squares) {
     const lines = [
@@ -42,7 +42,7 @@ function App() {
 
   useEffect(() => {
     if (winner) {
-      setStatus('Winner: ' + winner);
+      setStatus(`Winner: ${winner}`);
       setTimeout(() => {
         handleReset();
       }, 2000);
@@ -52,16 +52,13 @@ function App() {
         handleReset();
       }, 2000);
     } else {
-      setStatus('Next player: ' + (xIsNext ? 'X' : '0'));
+      setStatus(`Next player: ${xIsNext ? 'X' : '0'}`);
     }
   }, [winner, xIsNext, squares, status]);
 
-  const squareDisabled = chooseTeam || computerTurn || calculateWinner(squares);
-
-  console.log(squareDisabled);
-
   const handleSquareClick = useCallback(
     (i, computerChoose) => {
+      if (winner !== null) return;
       const nextSquares = squares.slice();
 
       const nextAvailableSquares = availableSquares.filter(
@@ -107,14 +104,15 @@ function App() {
   }
 
   function handleReset() {
+    setComputerTurn(false);
     setXIsNext('X');
     setSquares(Array(9).fill(null));
     setChooseTeam(true);
     setTeam('X');
     setAvailableSquares(allSquaresOpen);
-    setComputerTurn(false);
-    setAvailableSquares(allSquaresOpen);
+    setStatus(`Next player: ${xIsNext ? 'X' : '0'}`);
   }
+
   return (
     <div className='App'>
       <h1>
@@ -147,20 +145,27 @@ function App() {
       )}
 
       <div className='gameBoard'>
-        {allSquaresOpen.map((square) => (
-          <button
-            key={square}
-            className={
-              squares[square] === 'O' ? 'square blueText' : 'square redText'
-            }
-            disabled={squareDisabled || squares[square] !== null}
-            value={squares[square]}
-            type='button'
-            onClick={() => handleSquareClick(square, false)}
-          >
-            {squares[square]}
-          </button>
-        ))}
+        {allSquaresOpen.map((square) => {
+          const IsSquareDisabled =
+            chooseTeam ||
+            computerTurn ||
+            squares[square] !== null ||
+            winner !== null;
+          return (
+            <button
+              key={square}
+              className={
+                squares[square] === 'O' ? 'square blueText' : 'square redText'
+              }
+              disabled={IsSquareDisabled}
+              value={squares[square]}
+              type='button'
+              onClick={() => handleSquareClick(square, false)}
+            >
+              {squares[square]}
+            </button>
+          );
+        })}
       </div>
       {!chooseTeam && (
         <div className='assignXorOToPlayer'>
