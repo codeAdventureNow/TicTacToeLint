@@ -12,6 +12,7 @@ function App() {
   const [team, setTeam] = useState('X');
   const [computerTurn, setComputerTurn] = useState(false);
   const [availableSquares, setAvailableSquares] = useState(allSquaresOpen);
+  const [status, setStatus] = useState('Next player: ' + (xIsNext ? 'X' : '0'));
 
   function calculateWinner(squares) {
     const lines = [
@@ -37,7 +38,27 @@ function App() {
     return null;
   }
 
-  const gameDisabled = chooseTeam || computerTurn || calculateWinner(squares);
+  const winner = calculateWinner(squares);
+
+  useEffect(() => {
+    if (winner) {
+      setStatus('Winner: ' + winner);
+      setTimeout(() => {
+        handleReset();
+      }, 2000);
+    } else if (!squares.includes(null)) {
+      setStatus('Tie Game');
+      setTimeout(() => {
+        handleReset();
+      }, 2000);
+    } else {
+      setStatus('Next player: ' + (xIsNext ? 'X' : '0'));
+    }
+  }, [winner, xIsNext, squares, status]);
+
+  const squareDisabled = chooseTeam || computerTurn || calculateWinner(squares);
+
+  console.log(squareDisabled);
 
   const handleSquareClick = useCallback(
     (i, computerChoose) => {
@@ -83,23 +104,6 @@ function App() {
       setXIsNext(false);
       setTeam('O');
     }
-  }
-
-  const winner = calculateWinner(squares);
-  let status;
-
-  if (winner) {
-    status = 'Winner: ' + winner;
-    setTimeout(() => {
-      handleReset();
-    }, 2000);
-  } else if (!squares.includes(null)) {
-    status = 'Tie Game';
-    setTimeout(() => {
-      handleReset();
-    }, 2000);
-  } else {
-    status = 'Next player: ' + (xIsNext ? 'X' : '0');
   }
 
   function handleReset() {
@@ -149,7 +153,7 @@ function App() {
             className={
               squares[square] === 'O' ? 'square blueText' : 'square redText'
             }
-            disabled={gameDisabled || squares[square !== null]}
+            disabled={squareDisabled || squares[square] !== null}
             value={squares[square]}
             type='button'
             onClick={() => handleSquareClick(square, false)}
