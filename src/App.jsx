@@ -24,6 +24,32 @@ function App() {
   const [computerTurn, setComputerTurn] = useState(false);
   const [availableSquares, setAvailableSquares] = useState(allSquaresOpen);
 
+  function calculateWinner(squares) {
+    const lines = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+      [2, 5, 8],
+      [1, 4, 7],
+      [0, 3, 6],
+    ];
+    for (let i = 0; i < lines.length; i++) {
+      const [a, b, c] = lines[i];
+      if (
+        squares[a] &&
+        squares[a] === squares[b] &&
+        squares[a] === squares[c]
+      ) {
+        return squares[a];
+      }
+    }
+    return null;
+  }
+
+  const gameDisabled = chooseTeam || computerTurn || calculateWinner(squares);
+
   function handleSquareClick(i) {
     if (chooseTeam) {
       return;
@@ -99,30 +125,6 @@ function App() {
     }
   }
 
-  function calculateWinner(squares) {
-    const lines = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-      [2, 5, 8],
-      [1, 4, 7],
-      [0, 3, 6],
-    ];
-    for (let i = 0; i < lines.length; i++) {
-      const [a, b, c] = lines[i];
-      if (
-        squares[a] &&
-        squares[a] === squares[b] &&
-        squares[a] === squares[c]
-      ) {
-        return squares[a];
-      }
-    }
-    return null;
-  }
-
   const winner = calculateWinner(squares);
   let status;
 
@@ -184,23 +186,17 @@ function App() {
         {allSquaresOpen.map((square) => (
           <button
             key={square}
+            className={
+              squares[square] === 'O' ? 'square blueText' : 'square redText'
+            }
+            disabled={gameDisabled || squares[square !== null]}
             value={squares[square]}
             type='button'
             onClick={handleSquareClick}
           >
-            Save
+            {squares[square]}
           </button>
         ))}
-
-        {/* <Square value={squares[0]} onSquareClick={() => handleSquareClick(0)} />
-        <Square value={squares[1]} onSquareClick={() => handleSquareClick(1)} />
-        <Square value={squares[2]} onSquareClick={() => handleSquareClick(2)} />
-        <Square value={squares[3]} onSquareClick={() => handleSquareClick(3)} />
-        <Square value={squares[4]} onSquareClick={() => handleSquareClick(4)} />
-        <Square value={squares[5]} onSquareClick={() => handleSquareClick(5)} />
-        <Square value={squares[6]} onSquareClick={() => handleSquareClick(6)} />
-        <Square value={squares[7]} onSquareClick={() => handleSquareClick(7)} />
-        <Square value={squares[8]} onSquareClick={() => handleSquareClick(8)} /> */}
       </div>
       {!chooseTeam && (
         <div className='assignXorOToPlayer'>
