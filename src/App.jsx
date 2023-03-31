@@ -1,18 +1,7 @@
 /* eslint-disable jsx-quotes */
-import React from 'react';
-import { useState } from 'react';
+import React, { useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
-
-// function Square({ value, onSquareClick }) {
-//   return (
-//     <button
-//       className={value === 'O' ? 'square blueText' : 'square redText'}
-//       onClick={onSquareClick}
-//     >
-//       {value}
-//     </button>
-//   );
-// }
 
 const allSquaresOpen = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
@@ -50,60 +39,42 @@ function App() {
 
   const gameDisabled = chooseTeam || computerTurn || calculateWinner(squares);
 
-  function handleSquareClick(i) {
-    const nextSquares = squares.slice();
+  const handleSquareClick = useCallback(
+    (i, computerChoose) => {
+      const nextSquares = squares.slice();
 
-    const nextAvailableSquares = availableSquares.filter(
-      (square) => square !== i
-    );
+      const nextAvailableSquares = availableSquares.filter(
+        (square) => square !== i
+      );
 
-    if (xIsNext) {
-      nextSquares[i] = 'X';
-    } else {
-      nextSquares[i] = 'O';
-    }
+      if (xIsNext) {
+        nextSquares[i] = 'X';
+      } else {
+        nextSquares[i] = 'O';
+      }
 
-    setSquares(nextSquares);
-    setXIsNext(!xIsNext);
-    setAvailableSquares(nextAvailableSquares);
-    setComputerTurn(true);
-  }
+      setSquares(nextSquares);
+      setXIsNext(!xIsNext);
+      setAvailableSquares(nextAvailableSquares);
+      setComputerTurn(!computerChoose);
+    },
+    [availableSquares, squares, xIsNext]
+  );
 
-  function getRandomItem(arr) {
+  function getRandomSquare(arr) {
     const randomIndex = Math.floor(Math.random() * arr.length);
     const item = arr[randomIndex];
     return item;
   }
 
-  function computerChooseSquare() {
-    setTimeout(() => {
-      const nextSquares = squares.slice();
-
-      let randomIndex = getRandomItem(availableSquares);
-      console.log(randomIndex);
-
-      if (calculateWinner(squares)) {
-        return;
-      }
-      const nextAvailableSquares = availableSquares.filter(
-        (square) => square !== randomIndex
-      );
-
-      if (xIsNext) {
-        nextSquares[randomIndex] = 'X';
-      } else {
-        nextSquares[randomIndex] = 'O';
-      }
-      setSquares(nextSquares);
-      setXIsNext(!xIsNext);
-      setAvailableSquares(nextAvailableSquares);
-      setComputerTurn(false);
-    }, 1200);
-  }
-
-  if (computerTurn) {
-    computerChooseSquare();
-  }
+  useEffect(() => {
+    if (computerTurn) {
+      setTimeout(() => {
+        const randomIndex = getRandomSquare(availableSquares);
+        handleSquareClick(randomIndex, true);
+      }, 1200);
+    }
+  }, [availableSquares, computerTurn, handleSquareClick]);
 
   function handleChoosePlayerClick(value) {
     setChooseTeam(false);
