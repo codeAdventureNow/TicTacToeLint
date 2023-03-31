@@ -51,17 +51,6 @@ function App() {
   const gameDisabled = chooseTeam || computerTurn || calculateWinner(squares);
 
   function handleSquareClick(i) {
-    if (chooseTeam) {
-      return;
-    }
-
-    if (computerTurn) {
-      return;
-    }
-
-    if (squares[i] || calculateWinner(squares)) {
-      return;
-    }
     const nextSquares = squares.slice();
 
     const nextAvailableSquares = availableSquares.filter(
@@ -192,7 +181,7 @@ function App() {
             disabled={gameDisabled || squares[square !== null]}
             value={squares[square]}
             type='button'
-            onClick={handleSquareClick}
+            onClick={() => handleSquareClick(square, false)}
           >
             {squares[square]}
           </button>
