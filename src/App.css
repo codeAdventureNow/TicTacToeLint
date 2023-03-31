@@ -1,0 +1,84 @@
+.App {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+}
+
+.gameBoard {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.status {
+  margin: 20px;
+  font-size: 20px;
+}
+
+.square {
+  font-size: 20px;
+  border: 1px solid grey;
+  background-color: #fffae5;
+  width: 100px;
+  height: 100px;
+  border-radius: 1px;
+}
+
+.resetButton {
+  margin: 30px;
+  text-decoration: none;
+  border: none;
+  color: white;
+  background-color: #00cc00;
+  padding: 10px 20px;
+  display: inline-block;
+  border-radius: 5px;
+}
+
+h1 {
+  font-size: 44px;
+}
+
+.red {
+  background-color: #ef4423;
+  color: white;
+}
+
+.blue {
+  background-color: #2a3492;
+  color: white;
+}
+
+.blueText {
+  color: #2a3492;
+}
+
+.orangeText {
+  color: #ff9526;
+}
+
+.redText {
+  color: #ef4423;
+}
+
+.choosePlayerButton {
+  margin: 15px;
+  text-decoration: none;
+  border: none;
+  color: white;
+
+  padding: 10px 20px;
+  display: inline-block;
+  border-radius: 5px;
+}
+
+.assignXorOToPlayer {
+  display: flex;
+  flex-direction: row;
+}
+
+.playerAssignment {
+  margin: 10px 15px;
+}
