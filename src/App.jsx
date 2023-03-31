@@ -1,16 +1,18 @@
+/* eslint-disable jsx-quotes */
+import React from 'react';
 import { useState } from 'react';
 import './App.css';
 
-function Square({ value, onSquareClick }) {
-  return (
-    <button
-      className={value === 'O' ? 'square blueText' : 'square redText'}
-      onClick={onSquareClick}
-    >
-      {value}
-    </button>
-  );
-}
+// function Square({ value, onSquareClick }) {
+//   return (
+//     <button
+//       className={value === 'O' ? 'square blueText' : 'square redText'}
+//       onClick={onSquareClick}
+//     >
+//       {value}
+//     </button>
+//   );
+// }
 
 const allSquaresOpen = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
@@ -158,6 +160,7 @@ function App() {
         <div>
           <p>Choose your team:</p>
           <button
+            type='button'
             className='choosePlayerButton red'
             value='X'
             onClick={() => handleChoosePlayerClick('X')}
@@ -165,6 +168,7 @@ function App() {
             X
           </button>
           <button
+            type='button'
             className='choosePlayerButton blue'
             value='O'
             onClick={() => handleChoosePlayerClick('O')}
@@ -177,7 +181,18 @@ function App() {
       )}
 
       <div className='gameBoard'>
-        <Square value={squares[0]} onSquareClick={() => handleSquareClick(0)} />
+        {allSquaresOpen.map((square) => (
+          <button
+            key={square}
+            value={squares[square]}
+            type='button'
+            onClick={handleSquareClick}
+          >
+            Save
+          </button>
+        ))}
+
+        {/* <Square value={squares[0]} onSquareClick={() => handleSquareClick(0)} />
         <Square value={squares[1]} onSquareClick={() => handleSquareClick(1)} />
         <Square value={squares[2]} onSquareClick={() => handleSquareClick(2)} />
         <Square value={squares[3]} onSquareClick={() => handleSquareClick(3)} />
@@ -185,7 +200,7 @@ function App() {
         <Square value={squares[5]} onSquareClick={() => handleSquareClick(5)} />
         <Square value={squares[6]} onSquareClick={() => handleSquareClick(6)} />
         <Square value={squares[7]} onSquareClick={() => handleSquareClick(7)} />
-        <Square value={squares[8]} onSquareClick={() => handleSquareClick(8)} />
+        <Square value={squares[8]} onSquareClick={() => handleSquareClick(8)} /> */}
       </div>
       {!chooseTeam && (
         <div className='assignXorOToPlayer'>
@@ -195,7 +210,7 @@ function App() {
         </div>
       )}
 
-      <button className='resetButton' onClick={handleReset}>
+      <button type='button' className='resetButton' onClick={handleReset}>
         Reset
       </button>
     </div>
