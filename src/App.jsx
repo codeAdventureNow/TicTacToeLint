@@ -1,6 +1,5 @@
 /* eslint-disable jsx-quotes */
-import React, { useCallback } from 'react';
-import { useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import './App.css';
 
 const allSquaresOpen = [0, 1, 2, 3, 4, 5, 6, 7, 8];
@@ -14,7 +13,7 @@ function App() {
   const [availableSquares, setAvailableSquares] = useState(allSquaresOpen);
   const [status, setStatus] = useState(`Next player: ${xIsNext ? 'X' : '0'}`);
 
-  function calculateWinner(square) {
+  const calculateWinner = (square) => {
     const lines = [
       [0, 1, 2],
       [3, 4, 5],
@@ -32,7 +31,7 @@ function App() {
       }
     }
     return null;
-  }
+  };
 
   const winner = calculateWinner(squares);
 
@@ -80,11 +79,11 @@ function App() {
     [availableSquares, squares, xIsNext]
   );
 
-  function getRandomSquare(arr) {
+  const getRandomSquare = (arr) => {
     const randomIndex = Math.floor(Math.random() * arr.length);
     const item = arr[randomIndex];
     return item;
-  }
+  };
 
   useEffect(() => {
     if (computerTurn && winner !== null) {
@@ -98,14 +97,14 @@ function App() {
     }
   }, [availableSquares, computerTurn, handleSquareClick, winner]);
 
-  function handleChoosePlayerClick(value) {
+  const handleChoosePlayerClick = (value) => {
     setChooseTeam(false);
 
     if (value === 'O') {
       setXIsNext(false);
       setTeam('O');
     }
-  }
+  };
 
   return (
     <div className='App'>
