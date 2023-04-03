@@ -64,7 +64,6 @@ function App() {
 
   const handleSquareClick = useCallback(
     (i, computerChoose) => {
-      // if (winner !== null) return;
       const nextSquares = squares.slice();
 
       const nextAvailableSquares = availableSquares.filter(
@@ -88,13 +87,16 @@ function App() {
   }
 
   useEffect(() => {
+    if (computerTurn && winner !== null) {
+      return;
+    }
     if (computerTurn) {
       setTimeout(() => {
         const randomIndex = getRandomSquare(availableSquares);
         handleSquareClick(randomIndex, true);
       }, 1200);
     }
-  }, [availableSquares, computerTurn, handleSquareClick]);
+  }, [availableSquares, computerTurn, handleSquareClick, winner]);
 
   function handleChoosePlayerClick(value) {
     setChooseTeam(false);
@@ -139,10 +141,10 @@ function App() {
       <div className='gameBoard'>
         {allSquaresOpen.map((square) => {
           const IsSquareDisabled =
+            winner !== null ||
             chooseTeam ||
             computerTurn ||
-            squares[square] !== null ||
-            winner !== null;
+            squares[square] !== null;
           return (
             <button
               key={square}
