@@ -1,5 +1,4 @@
-/* eslint-disable jsx-quotes */
-import React, { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import './App.css';
 
 const allSquaresOpen = [0, 1, 2, 3, 4, 5, 6, 7, 8];
@@ -135,10 +134,7 @@ function App() {
       <div className='gameBoard'>
         {allSquaresOpen.map((square) => {
           const IsSquareDisabled =
-            winner !== null ||
-            chooseTeam ||
-            computerTurn ||
-            squares[square] !== null;
+            chooseTeam || computerTurn || squares[square] !== null;
           return (
             <button
               key={square}

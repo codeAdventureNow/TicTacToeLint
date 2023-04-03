@@ -10,5 +10,12 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['react'],
-  rules: {},
+  rules: {
+    'react/react-in-jsx-scope': 0,
+    'comma-dangle': 0,
+    'jsx-quotes': 0,
+    'react/jsx-one-expression-per-line': 0,
+    'operator-linebreak': 0,
+    'no-plusplus': 0,
+  },
 };
