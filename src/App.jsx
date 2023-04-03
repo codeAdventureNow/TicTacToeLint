@@ -46,13 +46,8 @@ function App() {
   }, [xIsNext]);
 
   useEffect(() => {
-    if (winner) {
-      setStatus(`Winner: ${winner}`);
-      setTimeout(() => {
-        handleReset();
-      }, 2000);
-    } else if (!squares.includes(null)) {
-      setStatus('Tie Game');
+    if (winner || !squares.includes(null)) {
+      setStatus(winner ? `Winner: ${winner}` : 'Tie Game');
       setTimeout(() => {
         handleReset();
       }, 2000);
