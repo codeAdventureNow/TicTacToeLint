@@ -1,4 +1,4 @@
-.App {
+.app-flex {
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -7,18 +7,36 @@
   min-width: 0;
 }
 
-.gameBoard {
+.game-title {
+  font-size: 3rem;
+}
+
+.heading-choose-team {
+  font-size: 1rem;
+}
+
+.choose-player-button {
+  margin: 1.5rem;
+  text-decoration: none;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  display: inline-block;
+  border-radius: 5px;
+}
+
+.game-status-next-player {
+  margin: 20px;
+  font-size: 1.5rem;
+}
+
+.game-board {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 }
 
-.status {
-  margin: 20px;
-  font-size: 20px;
-}
-
-.square {
-  font-size: 20px;
+.game-square {
+  font-size: 1.5rem;
   border: 1px solid grey;
   background-color: #fffae5;
   width: 100px;
@@ -26,8 +44,8 @@
   border-radius: 1px;
 }
 
-.resetButton {
-  margin: 30px;
+.reset-button {
+  margin: 2rem;
   text-decoration: none;
   border: none;
   color: white;
@@ -35,10 +53,6 @@
   padding: 10px 20px;
   display: inline-block;
   border-radius: 5px;
-}
-
-h1 {
-  font-size: 44px;
 }
 
 .red {
@@ -51,34 +65,24 @@ h1 {
   color: white;
 }
 
-.blueText {
+.blue-text {
   color: #2a3492;
 }
 
-.orangeText {
+.orange-text {
   color: #ff9526;
 }
 
-.redText {
+.red-text {
   color: #ef4423;
 }
 
-.choosePlayerButton {
-  margin: 15px;
-  text-decoration: none;
-  border: none;
-  color: white;
-
-  padding: 10px 20px;
-  display: inline-block;
-  border-radius: 5px;
-}
-
-.assignXorOToPlayer {
+.flex-player-assignment {
   display: flex;
   flex-direction: row;
 }
 
-.playerAssignment {
-  margin: 10px 15px;
+.heading-player-assignment {
+  margin: 2rem 1rem;
+  font-size: 1rem;
 }

@@ -57,7 +57,7 @@ function App() {
 
   const handleSquareClick = useCallback(
     (i, computerChoose) => {
-      const nextSquares = squares.slice();
+      const nextSquares = [...squares];
 
       const nextAvailableSquares = availableSquares.filter(
         (square) => square !== i
@@ -101,26 +101,26 @@ function App() {
   };
 
   return (
-    <div className='App'>
-      <h1>
-        <span className='blueText'>Tic </span>
-        <span className='orangeText'>Tac </span>
-        <span className='redText'>Toe </span>
+    <div className='app-flex'>
+      <h1 className='game-title'>
+        <span className='blue-text'>Tic </span>
+        <span className='orange-text'>Tac </span>
+        <span className='red-text'>Toe </span>
       </h1>
       {chooseTeam ? (
         <div>
-          <p>Choose your team:</p>
+          <h4 className='heading-choose-team'>Choose your team</h4>
           <button
+            className='choose-player-button red'
             type='button'
-            className='choosePlayerButton red'
             value='X'
             onClick={() => handleChoosePlayerClick('X')}
           >
             X
           </button>
           <button
+            className='choose-player-button blue'
             type='button'
-            className='choosePlayerButton blue'
             value='O'
             onClick={() => handleChoosePlayerClick('O')}
           >
@@ -128,19 +128,24 @@ function App() {
           </button>
         </div>
       ) : (
-        <div className='status'>{status}</div>
+        <div className='game-status-next-player'>{status}</div>
       )}
 
-      <div className='gameBoard'>
+      <div className='game-board'>
         {allSquaresOpen.map((square) => {
           const IsSquareDisabled =
-            chooseTeam || computerTurn || squares[square] !== null;
+            chooseTeam ||
+            computerTurn ||
+            squares[square] !== null ||
+            winner !== null;
           return (
             <button
-              key={square}
               className={
-                squares[square] === 'O' ? 'square blueText' : 'square redText'
+                squares[square] === 'O'
+                  ? 'game-square blue-text'
+                  : 'game-square red-text'
               }
+              key={square}
               disabled={IsSquareDisabled}
               value={squares[square]}
               type='button'
@@ -152,14 +157,14 @@ function App() {
         })}
       </div>
       {!chooseTeam && (
-        <div className='assignXorOToPlayer'>
-          <h5 className='playerAssignment'>
+        <div className='flex-player-assignment'>
+          <h5 className='heading-player-assignment'>
             You are team {team} vs. Computer {team === 'X' ? 'O' : 'X'}
           </h5>
         </div>
       )}
 
-      <button type='button' className='resetButton' onClick={handleReset}>
+      <button className='reset-button' type='button' onClick={handleReset}>
         Reset
       </button>
     </div>
