@@ -3,8 +3,37 @@ import './App.css';
 
 const allSquaresOpen = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
+const ACTIONS = {
+  HANDLE_RESET: 'handleReset',
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case ACTIONS.HANDLE_RESET:
+      return {
+        xIsNext: true,
+        squares: Array(9).fill(null),
+        chooseTeam: true,
+        computerTurn: false,
+        availableSquares: allSquaresOpen,
+        status: '',
+      };
+    default:
+      throw new Error();
+  }
+};
+
 function App() {
   const [xIsNext, setXIsNext] = useState(true);
+  const [state, dispatch] = useReducer(reducer, {
+    xIsNext: true,
+    squares: Array(9).fill(null),
+    chooseTeam: true,
+    computerTurn: false,
+    availableSquares: allSquaresOpen,
+    status: `Next player: ${xIsNext ? 'X' : '0'}`,
+  });
+
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [chooseTeam, setChooseTeam] = useState(true);
   const [team, setTeam] = useState('X');
@@ -165,7 +194,11 @@ function App() {
         </div>
       )}
 
-      <button className='reset-button' type='button' onClick={handleReset}>
+      <button
+        className='reset-button'
+        type='button'
+        onClick={() => dispatch({ type: ACTIONS.HANDLE_RESET })}
+      >
         Reset
       </button>
     </div>
