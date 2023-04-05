@@ -29,6 +29,7 @@ function App() {
         return squares[a];
       }
     }
+
     return null;
   };
 
