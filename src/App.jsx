@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useReducer } from 'react';
 import './App.css';
 
 const allSquaresOpen = [0, 1, 2, 3, 4, 5, 6, 7, 8];
