@@ -4,7 +4,9 @@ import './App.css';
 const allSquaresOpen = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
 const ACTIONS = {
-  HANDLE_RESET: 'handleReset',
+  HANDLE_RESET: 'HANDLE_RESET',
+  CHOOSE_TEAM: 'CHOOSE_TEAM',
+  HANDLE_TURN: 'HANDLE_TURN',
 };
 
 let xIsNext = true;
@@ -18,12 +20,55 @@ const initialState = {
   status: `Next player: ${xIsNext ? 'X' : '0'}`,
 };
 
+const calculateWinner = (squares) => {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+    [2, 5, 8],
+    [1, 4, 7],
+    [0, 3, 6],
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+
+  return null;
+};
+
 const reducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.HANDLE_RESET:
+      return initialState;
+
+    case ACTIONS.CHOOSE_TEAM:
       return {
-        ...initialState,
+        ...state,
+        chooseTeam: false,
+        team: action.payload.team,
+        xIsNext: action.payload.team === 'X',
       };
+
+    case ACTIONS.HANDLE_TURN: {
+      const winner = calculateWinner(state.squares);
+      // calculate winner
+      // calculate avaiable here
+
+      return {
+        ...state,
+        xIsNext: !state.xIsNext,
+        squares: 'pass through which square got taken', // action.payload.something
+        computerTurn: !state.computerTurn,
+        availableSquares: 'change here a',
+        status: 'will change',
+      };
+    }
+
     default:
       throw new Error();
   }
@@ -42,33 +87,12 @@ function App() {
 
   // Will calculateWinner live in the app component or the reducer?
 
-  const calculateWinner = (square) => {
-    const lines = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-      [2, 5, 8],
-      [1, 4, 7],
-      [0, 3, 6],
-    ];
-    for (let i = 0; i < lines.length; i++) {
-      const [a, b, c] = lines[i];
-      if (square[a] && square[a] === square[b] && square[a] === square[c]) {
-        return state.squares[a];
-      }
-    }
-
-    return null;
-  };
-
   const winner = calculateWinner(state.squares);
 
   // Will I be using a callback within the reducer to reset the state?
   const handleReset = useCallback(() => {
     dispatch({ type: ACTIONS.HANDLE_RESET });
-  }, [xIsNext]);
+  }, []);
 
   // Do my conditionals need to be part of a reducer?
   // If so how will implement a useEffect within a reducer?
@@ -120,12 +144,12 @@ function App() {
   }, [state.availableSquares, state.computerTurn, handleSquareClick, winner]);
 
   const handleChoosePlayerClick = (value) => {
-    setChooseTeam(false);
-
-    if (value === 'O') {
-      setXIsNext(false);
-      setTeam('O');
-    }
+    dispatch({
+      type: ACTIONS.CHOOSE_TEAM,
+      payload: {
+        team: value,
+      },
+    });
   };
 
   return (
