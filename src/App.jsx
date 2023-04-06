@@ -7,16 +7,22 @@ const ACTIONS = {
   HANDLE_RESET: 'handleReset',
 };
 
+let xIsNext = true;
+
+const initialState = {
+  xIsNext: true,
+  squares: Array(9).fill(null),
+  chooseTeam: true,
+  computerTurn: false,
+  availableSquares: allSquaresOpen,
+  status: `Next player: ${xIsNext ? 'X' : '0'}`,
+};
+
 const reducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.HANDLE_RESET:
       return {
-        xIsNext: true,
-        squares: Array(9).fill(null),
-        chooseTeam: true,
-        computerTurn: false,
-        availableSquares: allSquaresOpen,
-        status: '',
+        ...initialState,
       };
     default:
       throw new Error();
@@ -24,22 +30,17 @@ const reducer = (state, action) => {
 };
 
 function App() {
-  const [xIsNext, setXIsNext] = useState(true);
-  const [state, dispatch] = useReducer(reducer, {
-    xIsNext: true,
-    squares: Array(9).fill(null),
-    chooseTeam: true,
-    computerTurn: false,
-    availableSquares: allSquaresOpen,
-    status: `Next player: ${xIsNext ? 'X' : '0'}`,
-  });
+  const [state, dispatch] = useReducer(reducer, initialState);
+  // const [xIsNext, setXIsNext] = useState(true);
 
-  const [squares, setSquares] = useState(Array(9).fill(null));
-  const [chooseTeam, setChooseTeam] = useState(true);
-  const [team, setTeam] = useState('X');
-  const [computerTurn, setComputerTurn] = useState(false);
-  const [availableSquares, setAvailableSquares] = useState(allSquaresOpen);
-  const [status, setStatus] = useState(`Next player: ${xIsNext ? 'X' : '0'}`);
+  // const [state.squares, setSquares] = useState(Array(9).fill(null));
+  // const [state.chooseTeam, setChooseTeam] = useState(true);
+  // const [team, setTeam] = useState('X');
+  // const [state.state.computerTurn, setComputerTurn] = useState(false);
+  // const [state.availableSquares, setAvailableSquares] = useState(allSquaresOpen);
+  // const [state.status, setStatus] = useState(`Next player: ${xIsNext ? 'X' : '0'}`);
+
+  // Will calculateWinner live in the app component or the reducer?
 
   const calculateWinner = (square) => {
     const lines = [
@@ -55,27 +56,24 @@ function App() {
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
       if (square[a] && square[a] === square[b] && square[a] === square[c]) {
-        return squares[a];
+        return state.squares[a];
       }
     }
 
     return null;
   };
 
-  const winner = calculateWinner(squares);
+  const winner = calculateWinner(state.squares);
 
+  // Will I be using a callback within the reducer to reset the state?
   const handleReset = useCallback(() => {
-    setComputerTurn(false);
-    setXIsNext('X');
-    setSquares(Array(9).fill(null));
-    setChooseTeam(true);
-    setTeam('X');
-    setAvailableSquares(allSquaresOpen);
-    setStatus(`Next player: ${xIsNext ? 'X' : '0'}`);
+    dispatch({ type: ACTIONS.HANDLE_RESET });
   }, [xIsNext]);
 
+  // Do my conditionals need to be part of a reducer?
+  // If so how will implement a useEffect within a reducer?
   useEffect(() => {
-    if (winner || !squares.includes(null)) {
+    if (winner || !state.squares.includes(null)) {
       setStatus(winner ? `Winner: ${winner}` : 'Tie Game');
       setTimeout(() => {
         handleReset();
@@ -83,13 +81,13 @@ function App() {
     } else {
       setStatus(`Next player: ${xIsNext ? 'X' : '0'}`);
     }
-  }, [winner, xIsNext, squares, status, handleReset]);
+  }, [winner, xIsNext, state.squares, state.status, handleReset]);
 
   const handleSquareClick = useCallback(
     (i, computerChoose) => {
-      const nextSquares = [...squares];
+      const nextSquares = [...state.squares];
 
-      const nextAvailableSquares = availableSquares.filter(
+      const nextAvailableSquares = state.availableSquares.filter(
         (square) => square !== i
       );
 
@@ -100,7 +98,7 @@ function App() {
       setAvailableSquares(nextAvailableSquares);
       setComputerTurn(!computerChoose);
     },
-    [availableSquares, squares, xIsNext]
+    [state.availableSquares, state.squares, xIsNext]
   );
 
   const getRandomSquare = (arr) => {
@@ -110,16 +108,16 @@ function App() {
   };
 
   useEffect(() => {
-    if (computerTurn && winner !== null) {
+    if (state.computerTurn && winner !== null) {
       return;
     }
-    if (computerTurn) {
+    if (state.computerTurn) {
       setTimeout(() => {
-        const randomIndex = getRandomSquare(availableSquares);
+        const randomIndex = getRandomSquare(state.availableSquares);
         handleSquareClick(randomIndex, true);
       }, 1200);
     }
-  }, [availableSquares, computerTurn, handleSquareClick, winner]);
+  }, [state.availableSquares, state.computerTurn, handleSquareClick, winner]);
 
   const handleChoosePlayerClick = (value) => {
     setChooseTeam(false);
@@ -137,7 +135,7 @@ function App() {
         <span className='orange-text'>Tac </span>
         <span className='red-text'>Toe </span>
       </h1>
-      {chooseTeam ? (
+      {state.chooseTeam ? (
         <div>
           <h4 className='heading-choose-team'>Choose your team</h4>
           <button
@@ -158,35 +156,35 @@ function App() {
           </button>
         </div>
       ) : (
-        <div className='game-status-next-player'>{status}</div>
+        <div className='game-state.status-next-player'>{state.status}</div>
       )}
 
       <div className='game-board'>
         {allSquaresOpen.map((square) => {
           const IsSquareDisabled =
-            chooseTeam ||
-            computerTurn ||
-            squares[square] !== null ||
+            state.chooseTeam ||
+            state.computerTurn ||
+            state.squares[square] !== null ||
             winner !== null;
           return (
             <button
               className={
-                squares[square] === 'O'
+                state.squares[square] === 'O'
                   ? 'game-square blue-text'
                   : 'game-square red-text'
               }
               key={square}
               disabled={IsSquareDisabled}
-              value={squares[square]}
+              value={state.squares[square]}
               type='button'
               onClick={() => handleSquareClick(square, false)}
             >
-              {squares[square]}
+              {state.squares[square]}
             </button>
           );
         })}
       </div>
-      {!chooseTeam && (
+      {!state.chooseTeam && (
         <div className='flex-player-assignment'>
           <h5 className='heading-player-assignment'>
             You are team {team} vs. Computer {team === 'X' ? 'O' : 'X'}
@@ -197,7 +195,8 @@ function App() {
       <button
         className='reset-button'
         type='button'
-        onClick={() => dispatch({ type: ACTIONS.HANDLE_RESET })}
+        // onClick={() => dispatch({ type: ACTIONS.HANDLE_RESET })}
+        onClick={handleReset}
       >
         Reset
       </button>
