@@ -33,6 +33,7 @@ function App() {
     return null;
   };
 
+  console.log('newfactor2');
   const winner = calculateWinner(squares);
 
   const handleReset = useCallback(() => {
