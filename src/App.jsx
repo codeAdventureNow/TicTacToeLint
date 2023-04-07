@@ -1,66 +1,77 @@
 import { useCallback, useState, useEffect } from 'react';
 import './App.css';
 
+const calculateWinner = (squaresChosen) => {
+  const gameWinningLines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+    [2, 5, 8],
+    [1, 4, 7],
+    [0, 3, 6],
+  ];
+  for (let i = 0; i < gameWinningLines.length; i++) {
+    const [a, b, c] = gameWinningLines[i];
+    if (
+      squaresChosen[a] &&
+      squaresChosen[a] === squaresChosen[b] &&
+      squaresChosen[a] === squaresChosen[c]
+    ) {
+      return squaresChosen[i];
+    }
+  }
+
+  return null;
+};
+
+const getRandomSquare = (arr) => {
+  const randomIndex = Math.floor(Math.random() * arr.length);
+  const item = arr[randomIndex];
+  return item;
+};
+
 const allSquaresOpen = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
 function App() {
   const [chooseTeam, setChooseTeam] = useState(true);
-  const [team, setTeam] = useState('X');
+  const [team, setTeam] = useState('');
   const [xIsNext, setXIsNext] = useState(true);
   const [computerTurn, setComputerTurn] = useState(false);
   const [boardState, setBoardState] = useState(Array(9).fill(null));
-  const [availableSquares, setAvailableSquares] = useState(allSquaresOpen);
-  const [status, setStatus] = useState('');
-
-  const calculateWinner = (square) => {
-    const lines = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-      [2, 5, 8],
-      [1, 4, 7],
-      [0, 3, 6],
-    ];
-    for (let i = 0; i < lines.length; i++) {
-      const [a, b, c] = lines[i];
-      if (square[a] && square[a] === square[b] && square[a] === square[c]) {
-        return boardState[a];
-      }
-    }
-
-    return null;
-  };
+  const [avaialableSquareNumbers, setAvailableSquareNumbers] =
+    useState(allSquaresOpen);
+  const [gameStatusMessage, setGameStatusMessage] = useState('');
 
   const winner = calculateWinner(boardState);
 
   const handleReset = useCallback(() => {
+    setTeam('X');
     setComputerTurn(false);
     setXIsNext('X');
     setBoardState(Array(9).fill(null));
     setChooseTeam(true);
-    setTeam('X');
-    setAvailableSquares(allSquaresOpen);
-    setStatus(`Next player: ${xIsNext ? 'X' : '0'}`);
+    setAvailableSquareNumbers(allSquaresOpen);
+    setGameStatusMessage(`Next player: ${xIsNext ? 'X' : '0'}`);
   }, [xIsNext]);
 
   useEffect(() => {
     if (winner || !boardState.includes(null)) {
-      setStatus(winner ? `Winner: ${winner}` : 'Tie Game');
+      setGameStatusMessage(winner ? `Winner: ${winner}` : 'Tie Game');
       setTimeout(() => {
         handleReset();
       }, 2000);
     } else {
-      setStatus(`Next player: ${xIsNext ? 'X' : '0'}`);
+      setGameStatusMessage(`Next player: ${xIsNext ? 'X' : '0'}`);
     }
-  }, [winner, xIsNext, boardState, status, handleReset]);
+  }, [winner, xIsNext, boardState, gameStatusMessage, handleReset]);
 
   const handleSquareClick = useCallback(
     (i, computerChoose) => {
       const nextSquares = [...boardState];
 
-      const nextAvailableSquares = availableSquares.filter(
+      const nextAvailableSquares = avaialableSquareNumbers.filter(
         (square) => square !== i
       );
 
@@ -68,17 +79,11 @@ function App() {
 
       setBoardState(nextSquares);
       setXIsNext(!xIsNext);
-      setAvailableSquares(nextAvailableSquares);
+      setAvailableSquareNumbers(nextAvailableSquares);
       setComputerTurn(!computerChoose);
     },
-    [availableSquares, boardState, xIsNext]
+    [avaialableSquareNumbers, boardState, xIsNext]
   );
-
-  const getRandomSquare = (arr) => {
-    const randomIndex = Math.floor(Math.random() * arr.length);
-    const item = arr[randomIndex];
-    return item;
-  };
 
   useEffect(() => {
     if (computerTurn && winner !== null) {
@@ -86,11 +91,11 @@ function App() {
     }
     if (computerTurn) {
       setTimeout(() => {
-        const randomIndex = getRandomSquare(availableSquares);
+        const randomIndex = getRandomSquare(avaialableSquareNumbers);
         handleSquareClick(randomIndex, true);
       }, 1200);
     }
-  }, [availableSquares, computerTurn, handleSquareClick, winner]);
+  }, [avaialableSquareNumbers, computerTurn, handleSquareClick, winner]);
 
   const handleChoosePlayerClick = (value) => {
     setChooseTeam(false);
@@ -129,7 +134,7 @@ function App() {
           </button>
         </div>
       ) : (
-        <div className='game-status-next-player'>{status}</div>
+        <div className='game-status-next-player'>{gameStatusMessage}</div>
       )}
 
       <div className='game-board'>
