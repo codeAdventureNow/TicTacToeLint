@@ -26,9 +26,9 @@ const calculateWinner = (squaresChosen) => {
   return null;
 };
 
-const getRandomSquare = (arr) => {
-  const randomIndex = Math.floor(Math.random() * arr.length);
-  const item = arr[randomIndex];
+const getRandomSquare = (squareNumbers) => {
+  const randomIndex = Math.floor(Math.random() * squareNumbers.length);
+  const item = squareNumbers[randomIndex];
   return item;
 };
 
