@@ -42,7 +42,6 @@ function App() {
   const [boardState, setBoardState] = useState(Array(9).fill(null));
   const [avaialableSquareNumbers, setAvailableSquareNumbers] =
     useState(allSquaresOpen);
-  const [gameStatusMessage, setGameStatusMessage] = useState('');
 
   const winner = calculateWinner(boardState);
 
@@ -53,19 +52,15 @@ function App() {
     setBoardState(Array(9).fill(null));
     setChooseTeam(true);
     setAvailableSquareNumbers(allSquaresOpen);
-    setGameStatusMessage(`Next player: ${xIsNext ? 'X' : '0'}`);
-  }, [xIsNext]);
+  }, []);
 
   useEffect(() => {
     if (winner || !boardState.includes(null)) {
-      setGameStatusMessage(winner ? `Winner: ${winner}` : 'Tie Game');
       setTimeout(() => {
         handleReset();
       }, 2000);
-    } else {
-      setGameStatusMessage(`Next player: ${xIsNext ? 'X' : '0'}`);
     }
-  }, [winner, xIsNext, boardState, gameStatusMessage, handleReset]);
+  }, [winner, xIsNext, boardState, handleReset]);
 
   const handleSquareClick = useCallback(
     (i, computerChoose) => {
@@ -106,6 +101,16 @@ function App() {
     }
   };
 
+  const statusMessage = () => {
+    if (winner) {
+      return `Winner: ${winner}`;
+    }
+    if (!boardState.includes(null)) {
+      return 'Tie Game';
+    }
+    return `Next player: ${xIsNext ? 'X' : '0'}`;
+  };
+
   return (
     <div className='app-flex'>
       <h1 className='game-title'>
@@ -134,7 +139,7 @@ function App() {
           </button>
         </div>
       ) : (
-        <div className='game-status-next-player'>{gameStatusMessage}</div>
+        <div className='game-status-next-player'>{statusMessage()}</div>
       )}
 
       <div className='game-board'>
