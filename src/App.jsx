@@ -10,7 +10,7 @@ function App() {
   const [team, setTeam] = useState('X');
   const [computerTurn, setComputerTurn] = useState(false);
   const [availableSquares, setAvailableSquares] = useState(allSquaresOpen);
-  const [status, setStatus] = useState(`Next player: ${xIsNext ? 'X' : '0'}`);
+  const [status, setStatus] = useState('');
 
   const calculateWinner = (square) => {
     const lines = [
