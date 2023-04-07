@@ -62,8 +62,6 @@ function App() {
       setTimeout(() => {
         handleReset();
       }, 2000);
-    } else {
-      setGameStatusMessage(`Next player: ${xIsNext ? 'X' : '0'}`);
     }
   }, [winner, xIsNext, boardState, gameStatusMessage, handleReset]);
 
@@ -81,6 +79,7 @@ function App() {
       setXIsNext(!xIsNext);
       setAvailableSquareNumbers(nextAvailableSquares);
       setComputerTurn(!computerChoose);
+      setGameStatusMessage(`Next player: ${xIsNext ? 'X' : '0'}`);
     },
     [avaialableSquareNumbers, boardState, xIsNext]
   );
