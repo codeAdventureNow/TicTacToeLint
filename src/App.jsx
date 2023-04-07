@@ -4,11 +4,11 @@ import './App.css';
 const allSquaresOpen = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
 function App() {
-  const [xIsNext, setXIsNext] = useState(true);
-  const [squares, setSquares] = useState(Array(9).fill(null));
   const [chooseTeam, setChooseTeam] = useState(true);
   const [team, setTeam] = useState('X');
+  const [xIsNext, setXIsNext] = useState(true);
   const [computerTurn, setComputerTurn] = useState(false);
+  const [boardState, setBoardState] = useState(Array(9).fill(null));
   const [availableSquares, setAvailableSquares] = useState(allSquaresOpen);
   const [status, setStatus] = useState('');
 
@@ -26,20 +26,19 @@ function App() {
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
       if (square[a] && square[a] === square[b] && square[a] === square[c]) {
-        return squares[a];
+        return boardState[a];
       }
     }
 
     return null;
   };
 
-  console.log('newfactor2');
-  const winner = calculateWinner(squares);
+  const winner = calculateWinner(boardState);
 
   const handleReset = useCallback(() => {
     setComputerTurn(false);
     setXIsNext('X');
-    setSquares(Array(9).fill(null));
+    setBoardState(Array(9).fill(null));
     setChooseTeam(true);
     setTeam('X');
     setAvailableSquares(allSquaresOpen);
@@ -47,7 +46,7 @@ function App() {
   }, [xIsNext]);
 
   useEffect(() => {
-    if (winner || !squares.includes(null)) {
+    if (winner || !boardState.includes(null)) {
       setStatus(winner ? `Winner: ${winner}` : 'Tie Game');
       setTimeout(() => {
         handleReset();
@@ -55,11 +54,11 @@ function App() {
     } else {
       setStatus(`Next player: ${xIsNext ? 'X' : '0'}`);
     }
-  }, [winner, xIsNext, squares, status, handleReset]);
+  }, [winner, xIsNext, boardState, status, handleReset]);
 
   const handleSquareClick = useCallback(
     (i, computerChoose) => {
-      const nextSquares = [...squares];
+      const nextSquares = [...boardState];
 
       const nextAvailableSquares = availableSquares.filter(
         (square) => square !== i
@@ -67,12 +66,12 @@ function App() {
 
       nextSquares[i] = xIsNext ? 'X' : 'O';
 
-      setSquares(nextSquares);
+      setBoardState(nextSquares);
       setXIsNext(!xIsNext);
       setAvailableSquares(nextAvailableSquares);
       setComputerTurn(!computerChoose);
     },
-    [availableSquares, squares, xIsNext]
+    [availableSquares, boardState, xIsNext]
   );
 
   const getRandomSquare = (arr) => {
@@ -138,22 +137,22 @@ function App() {
           const IsSquareDisabled =
             chooseTeam ||
             computerTurn ||
-            squares[square] !== null ||
+            boardState[square] !== null ||
             winner !== null;
           return (
             <button
               className={
-                squares[square] === 'O'
+                boardState[square] === 'O'
                   ? 'game-square blue-text'
                   : 'game-square red-text'
               }
               key={square}
               disabled={IsSquareDisabled}
-              value={squares[square]}
+              value={boardState[square]}
               type='button'
               onClick={() => handleSquareClick(square, false)}
             >
-              {squares[square]}
+              {boardState[square]}
             </button>
           );
         })}
