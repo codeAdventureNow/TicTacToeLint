@@ -1,31 +1,6 @@
 import { useCallback, useState, useEffect } from 'react';
 import './App.css';
 
-const calculateWinner = (squaresChosen) => {
-  const gameWinningLines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-    [2, 5, 8],
-    [1, 4, 7],
-    [0, 3, 6],
-  ];
-  for (let i = 0; i < gameWinningLines.length; i++) {
-    const [a, b, c] = gameWinningLines[i];
-    if (
-      squaresChosen[a] &&
-      squaresChosen[a] === squaresChosen[b] &&
-      squaresChosen[a] === squaresChosen[c]
-    ) {
-      return squaresChosen[i];
-    }
-  }
-
-  return null;
-};
-
 const getRandomSquare = (squareNumbers) => {
   const randomIndex = Math.floor(Math.random() * squareNumbers.length);
   const item = squareNumbers[randomIndex];
@@ -43,6 +18,30 @@ function App() {
   const [avaialableSquareNumbers, setAvailableSquareNumbers] =
     useState(allSquaresOpen);
   const [gameStatusMessage, setGameStatusMessage] = useState('');
+  const calculateWinner = (squaresChosen) => {
+    const gameWinningLines = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+      [2, 5, 8],
+      [1, 4, 7],
+      [0, 3, 6],
+    ];
+    for (let i = 0; i < gameWinningLines.length; i++) {
+      const [a, b, c] = gameWinningLines[i];
+      if (
+        squaresChosen[a] &&
+        squaresChosen[a] === squaresChosen[b] &&
+        squaresChosen[a] === squaresChosen[c]
+      ) {
+        return boardState[a];
+      }
+    }
+
+    return null;
+  };
 
   const winner = calculateWinner(boardState);
 
