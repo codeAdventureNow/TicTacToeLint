@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useReducer } from 'react';
 import './App.css';
 
 const getRandomSquare = (squareNumbers) => {
@@ -32,11 +32,38 @@ const calculateWinner = (squaresChosen) => {
   return null;
 };
 
+const ACTIONS = {
+  HANDLE_RESET: 'HANDLE_RESET',
+  CHOOSE_TEAM: 'CHOOSE_TEAM',
+};
+
 const allSquaresOpen = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
-console.log('newfactor2 with reducer');
+const intitialState = {
+  xIsNext: true,
+  squares: Array(9).fill(null),
+  chooseTeam: true,
+  computerTurn: false,
+  availableSquares: allSquaresOpen,
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case ACTIONS.HANDLE_RESET:
+      return intitialState;
+    case ACTIONS.CHOOSE_TEAM:
+      return {
+        ...state,
+        chooseTeam: false,
+      };
+
+    default:
+      throw new Error();
+  }
+};
 
 function App() {
+  const [state, dispatch] = useReducer(reducer, intitialState);
   const [chooseTeam, setChooseTeam] = useState(true);
   const [team, setTeam] = useState('');
   const [xIsNext, setXIsNext] = useState(true);
@@ -48,12 +75,7 @@ function App() {
   const winner = calculateWinner(boardState);
 
   const handleReset = useCallback(() => {
-    setTeam('X');
-    setComputerTurn(false);
-    setXIsNext('X');
-    setBoardState(Array(9).fill(null));
-    setChooseTeam(true);
-    setAvailableSquareNumbers(allSquaresOpen);
+    dispatch({ type: ACTIONS.HANDLE_RESET });
   }, []);
 
   useEffect(() => {
