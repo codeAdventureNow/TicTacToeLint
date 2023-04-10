@@ -35,16 +35,18 @@ const calculateWinner = (squaresChosen) => {
 const ACTIONS = {
   HANDLE_RESET: 'HANDLE_RESET',
   CHOOSE_TEAM: 'CHOOSE_TEAM',
+  HANDLE_TURN: 'HANDLE_TURN',
 };
 
 const allSquaresOpen = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
 const intitialState = {
-  xIsNext: true,
-  squares: Array(9).fill(null),
   chooseTeam: true,
+  team: '',
+  xIsNext: true,
   computerTurn: false,
-  availableSquares: allSquaresOpen,
+  boardState: Array(9).fill(null),
+  avaialableSquareNumbers: allSquaresOpen,
 };
 
 const reducer = (state, action) => {
@@ -52,10 +54,28 @@ const reducer = (state, action) => {
     case ACTIONS.HANDLE_RESET:
       return intitialState;
     case ACTIONS.CHOOSE_TEAM:
+      // setChooseTeam(false);
+
+      // if (value === 'O') {
+      //   setXIsNext(false);
+      //   setTeam('O');
+      // }
       return {
         ...state,
         chooseTeam: false,
+        team: action.payload.team,
+        // will this be set to false if we choose 'O'
+        xIsNext: action.payload.team === 'X',
       };
+    case ACTIONS.HANDLE_TURN: {
+      return {
+        ...state,
+        boardState: action.payload.boardState,
+        xIsNext: !state.xIsNext,
+        avaialableSquareNumbers: action.payload.avaialableSquareNumbers,
+        computerTurn: action.payload.computerTurn,
+      };
+    }
 
     default:
       throw new Error();
@@ -64,75 +84,89 @@ const reducer = (state, action) => {
 
 function App() {
   const [state, dispatch] = useReducer(reducer, intitialState);
-  const [chooseTeam, setChooseTeam] = useState(true);
-  const [team, setTeam] = useState('');
-  const [xIsNext, setXIsNext] = useState(true);
-  const [computerTurn, setComputerTurn] = useState(false);
-  const [boardState, setBoardState] = useState(Array(9).fill(null));
-  const [avaialableSquareNumbers, setAvailableSquareNumbers] =
-    useState(allSquaresOpen);
+  // const [chooseTeam, setChooseTeam] = useState(true);
+  // const [team, setTeam] = useState('');
+  // const [xIsNext, setXIsNext] = useState(true);
+  // const [computerTurn, setComputerTurn] = useState(false);
+  // const [boardState, setBoardState] = useState(Array(9).fill(null));
+  // const [avaialableSquareNumbers, setAvailableSquareNumbers] =
+  //   useState(allSquaresOpen);
 
-  const winner = calculateWinner(boardState);
+  const winner = calculateWinner(state.boardState);
 
   const handleReset = useCallback(() => {
     dispatch({ type: ACTIONS.HANDLE_RESET });
   }, []);
 
   useEffect(() => {
-    if (winner || !boardState.includes(null)) {
+    if (winner || !state.boardState.includes(null)) {
       setTimeout(() => {
         handleReset();
       }, 2000);
     }
-  }, [winner, xIsNext, boardState, handleReset]);
+  }, [winner, state.xIsNext, state.boardState, handleReset]);
 
   const handleSquareClick = useCallback(
     (i, computerChoose) => {
-      const nextSquares = [...boardState];
+      const nextSquares = [...state.boardState];
 
-      const nextAvailableSquares = avaialableSquareNumbers.filter(
+      const nextAvailableSquares = state.avaialableSquareNumbers.filter(
         (square) => square !== i
       );
 
-      nextSquares[i] = xIsNext ? 'X' : 'O';
+      nextSquares[i] = state.xIsNext ? 'X' : 'O';
 
-      setBoardState(nextSquares);
-      setXIsNext(!xIsNext);
-      setAvailableSquareNumbers(nextAvailableSquares);
-      setComputerTurn(!computerChoose);
+      dispatch({
+        type: ACTIONS.HANDLE_TURN,
+        payload: {
+          boardState: nextSquares,
+          avaialableSquareNumbers: nextAvailableSquares,
+          computerTurn: !computerChoose,
+        },
+      });
+
+      // setBoardState(nextSquares);
+      // setXIsNext(!xIsNext);
+      // setAvailableSquareNumbers(nextAvailableSquares);
+      // setComputerTurn(!computerChoose);
     },
-    [avaialableSquareNumbers, boardState, xIsNext]
+    [state.avaialableSquareNumbers, state.boardState, state.xIsNext]
   );
 
   useEffect(() => {
-    if (computerTurn && winner !== null) {
+    if (state.computerTurn && winner !== null) {
       return;
     }
-    if (computerTurn) {
+    if (state.computerTurn) {
       setTimeout(() => {
-        const randomIndex = getRandomSquare(avaialableSquareNumbers);
+        const randomIndex = getRandomSquare(state.avaialableSquareNumbers);
         handleSquareClick(randomIndex, true);
       }, 1200);
     }
-  }, [avaialableSquareNumbers, computerTurn, handleSquareClick, winner]);
+  }, [
+    state.avaialableSquareNumbers,
+    state.computerTurn,
+    handleSquareClick,
+    winner,
+  ]);
 
   const handleChoosePlayerClick = (value) => {
-    setChooseTeam(false);
-
-    if (value === 'O') {
-      setXIsNext(false);
-      setTeam('O');
-    }
+    dispatch({
+      type: ACTIONS.CHOOSE_TEAM,
+      payload: {
+        team: value,
+      },
+    });
   };
 
   const statusMessage = () => {
     if (winner) {
       return `Winner: ${winner}`;
     }
-    if (!boardState.includes(null)) {
+    if (!state.boardState.includes(null)) {
       return 'Tie Game';
     }
-    return `Next player: ${xIsNext ? 'X' : '0'}`;
+    return `Next player: ${state.xIsNext ? 'X' : '0'}`;
   };
 
   return (
@@ -142,7 +176,7 @@ function App() {
         <span className='orange-text'>Tac </span>
         <span className='red-text'>Toe </span>
       </h1>
-      {chooseTeam ? (
+      {state.chooseTeam ? (
         <div>
           <h4 className='heading-choose-team'>Choose your team</h4>
           <button
@@ -169,32 +203,33 @@ function App() {
       <div className='game-board'>
         {allSquaresOpen.map((square) => {
           const IsSquareDisabled =
-            chooseTeam ||
-            computerTurn ||
-            boardState[square] !== null ||
+            state.chooseTeam ||
+            state.computerTurn ||
+            state.boardState[square] !== null ||
             winner !== null;
           return (
             <button
               className={
-                boardState[square] === 'O'
+                state.boardState[square] === 'O'
                   ? 'game-square blue-text'
                   : 'game-square red-text'
               }
               key={square}
               disabled={IsSquareDisabled}
-              value={boardState[square]}
+              value={state.boardState[square]}
               type='button'
               onClick={() => handleSquareClick(square, false)}
             >
-              {boardState[square]}
+              {state.boardState[square]}
             </button>
           );
         })}
       </div>
-      {!chooseTeam && (
+      {!state.chooseTeam && (
         <div className='flex-player-assignment'>
           <h5 className='heading-player-assignment'>
-            You are team {team} vs. Computer {team === 'X' ? 'O' : 'X'}
+            You are team {state.team} vs. Computer{' '}
+            {state.team === 'X' ? 'O' : 'X'}
           </h5>
         </div>
       )}
