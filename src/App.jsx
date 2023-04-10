@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect, useReducer } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 import './App.css';
 
 const getRandomSquare = (squareNumbers) => {
@@ -64,7 +64,7 @@ const reducer = (state, action) => {
         ...state,
         chooseTeam: false,
         team: action.payload.team,
-        // will this be set to false if we choose 'O'
+        // will xisNext be set to false if we choose 'O'
         xIsNext: action.payload.team === 'X',
       };
     case ACTIONS.HANDLE_TURN: {
@@ -84,13 +84,6 @@ const reducer = (state, action) => {
 
 function App() {
   const [state, dispatch] = useReducer(reducer, intitialState);
-  // const [chooseTeam, setChooseTeam] = useState(true);
-  // const [team, setTeam] = useState('');
-  // const [xIsNext, setXIsNext] = useState(true);
-  // const [computerTurn, setComputerTurn] = useState(false);
-  // const [boardState, setBoardState] = useState(Array(9).fill(null));
-  // const [avaialableSquareNumbers, setAvailableSquareNumbers] =
-  //   useState(allSquaresOpen);
 
   const winner = calculateWinner(state.boardState);
 
@@ -115,7 +108,6 @@ function App() {
       );
 
       nextSquares[i] = state.xIsNext ? 'X' : 'O';
-
       dispatch({
         type: ACTIONS.HANDLE_TURN,
         payload: {
@@ -124,11 +116,6 @@ function App() {
           computerTurn: !computerChoose,
         },
       });
-
-      // setBoardState(nextSquares);
-      // setXIsNext(!xIsNext);
-      // setAvailableSquareNumbers(nextAvailableSquares);
-      // setComputerTurn(!computerChoose);
     },
     [state.avaialableSquareNumbers, state.boardState, state.xIsNext]
   );
@@ -159,7 +146,7 @@ function App() {
     });
   };
 
-  const statusMessage = () => {
+  function statusMessage() {
     if (winner) {
       return `Winner: ${winner}`;
     }
@@ -167,7 +154,7 @@ function App() {
       return 'Tie Game';
     }
     return `Next player: ${state.xIsNext ? 'X' : '0'}`;
-  };
+  }
 
   return (
     <div className='app-flex'>
