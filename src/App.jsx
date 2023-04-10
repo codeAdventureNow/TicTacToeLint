@@ -34,6 +34,8 @@ const calculateWinner = (squaresChosen) => {
 
 const allSquaresOpen = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
+console.log('newfactor2 with reducer');
+
 function App() {
   const [chooseTeam, setChooseTeam] = useState(true);
   const [team, setTeam] = useState('');
