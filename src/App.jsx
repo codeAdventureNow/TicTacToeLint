@@ -18,6 +18,7 @@ const calculateWinner = (squaresChosen) => {
     [1, 4, 7],
     [0, 3, 6],
   ];
+
   for (let i = 0; i < gameWinningLines.length; i++) {
     const [a, b, c] = gameWinningLines[i];
     if (
@@ -81,17 +82,24 @@ function App() {
 
   const winner = calculateWinner(state.boardState);
 
-  const handleReset = useCallback(() => {
-    dispatch({ type: ACTIONS.HANDLE_RESET });
-  }, []);
-
-  useEffect(() => {
-    if (winner || !state.boardState.includes(null)) {
-      setTimeout(() => {
-        handleReset();
-      }, 2000);
+  const statusMessage = () => {
+    if (winner) {
+      return `Winner: ${winner}`;
     }
-  }, [winner, state.xIsNext, state.boardState, handleReset]);
+    if (!state.boardState.includes(null)) {
+      return 'Tie Game';
+    }
+    return `Next player: ${state.xIsNext ? 'X' : '0'}`;
+  };
+
+  const handleChoosePlayerClick = (value) => {
+    dispatch({
+      type: ACTIONS.CHOOSE_TEAM,
+      payload: {
+        team: value,
+      },
+    });
+  };
 
   const handleSquareClick = useCallback(
     (i, computerChoose) => {
@@ -114,6 +122,18 @@ function App() {
     [state.avaialableSquareNumbers, state.boardState, state.xIsNext]
   );
 
+  const handleReset = useCallback(() => {
+    dispatch({ type: ACTIONS.HANDLE_RESET });
+  }, []);
+
+  useEffect(() => {
+    if (winner || !state.boardState.includes(null)) {
+      setTimeout(() => {
+        handleReset();
+      }, 2000);
+    }
+  }, [winner, state.xIsNext, state.boardState, handleReset]);
+
   useEffect(() => {
     if (state.computerTurn && winner !== null) {
       return;
@@ -130,25 +150,6 @@ function App() {
     handleSquareClick,
     winner,
   ]);
-
-  const handleChoosePlayerClick = (value) => {
-    dispatch({
-      type: ACTIONS.CHOOSE_TEAM,
-      payload: {
-        team: value,
-      },
-    });
-  };
-
-  function statusMessage() {
-    if (winner) {
-      return `Winner: ${winner}`;
-    }
-    if (!state.boardState.includes(null)) {
-      return 'Tie Game';
-    }
-    return `Next player: ${state.xIsNext ? 'X' : '0'}`;
-  }
 
   return (
     <div className='app-flex'>
