@@ -1,96 +1,14 @@
 import { useCallback, useEffect, useReducer } from 'react';
+import { calculateWinner, getRandomSquare, statusMessage } from './utils';
+import { intitialState, reducer, ACTIONS } from './reducer';
 import './App.css';
-
-const getRandomSquare = (squareNumbers) => {
-  const randomIndex = Math.floor(Math.random() * squareNumbers.length);
-  const item = squareNumbers[randomIndex];
-  return item;
-};
-
-const calculateWinner = (squaresChosen) => {
-  const gameWinningLines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-    [2, 5, 8],
-    [1, 4, 7],
-    [0, 3, 6],
-  ];
-
-  for (let i = 0; i < gameWinningLines.length; i++) {
-    const [a, b, c] = gameWinningLines[i];
-    if (
-      squaresChosen[a] &&
-      squaresChosen[a] === squaresChosen[b] &&
-      squaresChosen[a] === squaresChosen[c]
-    ) {
-      return squaresChosen[a];
-    }
-  }
-
-  return null;
-};
-
-const ACTIONS = {
-  HANDLE_RESET: 'HANDLE_RESET',
-  CHOOSE_TEAM: 'CHOOSE_TEAM',
-  HANDLE_TURN: 'HANDLE_TURN',
-};
 
 const allSquaresOpen = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
-const intitialState = {
-  chooseTeam: true,
-  team: '',
-  xIsNext: true,
-  computerTurn: false,
-  boardState: Array(9).fill(null),
-  avaialableSquareNumbers: allSquaresOpen,
-};
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case ACTIONS.HANDLE_RESET:
-      return intitialState;
-    case ACTIONS.CHOOSE_TEAM:
-      return {
-        ...state,
-        chooseTeam: false,
-        team: action.payload.team,
-        // will xisNext be set to false if we choose 'O'
-        xIsNext: action.payload.team === 'X',
-      };
-    case ACTIONS.HANDLE_TURN: {
-      return {
-        ...state,
-        boardState: action.payload.boardState,
-        xIsNext: !state.xIsNext,
-        avaialableSquareNumbers: action.payload.avaialableSquareNumbers,
-        computerTurn: action.payload.computerTurn,
-      };
-    }
-
-    default:
-      throw new Error();
-  }
-};
-
 function App() {
   const [state, dispatch] = useReducer(reducer, intitialState);
-
   const winner = calculateWinner(state.boardState);
-
-  const statusMessage = () => {
-    if (winner) {
-      return `Winner: ${winner}`;
-    }
-    if (!state.boardState.includes(null)) {
-      return 'Tie Game';
-    }
-    return `Next player: ${state.xIsNext ? 'X' : '0'}`;
-  };
+  const computerTeam = state.team === 'X' ? 'O' : 'X';
 
   const handleChoosePlayerClick = (value) => {
     dispatch({
@@ -101,54 +19,52 @@ function App() {
     });
   };
 
-  const handleSquareClick = useCallback(
-    (i, computerChoose) => {
-      const nextSquares = [...state.boardState];
-
-      const nextAvailableSquares = state.avaialableSquareNumbers.filter(
-        (square) => square !== i
-      );
-
-      nextSquares[i] = state.xIsNext ? 'X' : 'O';
-      dispatch({
-        type: ACTIONS.HANDLE_TURN,
-        payload: {
-          boardState: nextSquares,
-          avaialableSquareNumbers: nextAvailableSquares,
-          computerTurn: !computerChoose,
-        },
-      });
-    },
-    [state.avaialableSquareNumbers, state.boardState, state.xIsNext]
-  );
-
   const handleReset = useCallback(() => {
     dispatch({ type: ACTIONS.HANDLE_RESET });
   }, []);
 
+  const handleSquareClick = useCallback((squareIndex, team) => {
+    dispatch({
+      type: ACTIONS.NEW_HANDLE_TURN,
+      payload: {
+        clickedSquare: squareIndex,
+        team,
+      },
+    });
+  }, []);
+
+  const handleComputerTurn = useCallback(() => {
+    // boardState = ['x', 'o', null, null, 'x']
+    const availableSquaresIndices = state.boardState.reduce(
+      (acc, curr, index) => {
+        if (curr === null) {
+          return [...acc, index];
+        }
+
+        return acc;
+      },
+      []
+    ); // [2, 3]
+
+    const randomIndex = getRandomSquare(availableSquaresIndices);
+
+    handleSquareClick(randomIndex, computerTeam);
+  }, [handleSquareClick, computerTeam, state.boardState]);
+
+  // if theres a winner or a draw, reset the game
   useEffect(() => {
     if (winner || !state.boardState.includes(null)) {
-      setTimeout(() => {
-        handleReset();
-      }, 2000);
+      setTimeout(handleReset, 2000);
     }
-    if (state.computerTurn && winner !== null) {
-      return;
+  }, [winner, handleReset, state.boardState]);
+
+  // if there isn't a winner, i.e. the game is still going and
+  // it's the computers turn, then the computer should go
+  useEffect(() => {
+    if (winner === null && state.computerTurn) {
+      setTimeout(handleComputerTurn, 1200);
     }
-    if (state.computerTurn) {
-      setTimeout(() => {
-        const randomIndex = getRandomSquare(state.avaialableSquareNumbers);
-        handleSquareClick(randomIndex, true);
-      }, 1200);
-    }
-  }, [
-    state.avaialableSquareNumbers,
-    state.computerTurn,
-    handleSquareClick,
-    winner,
-    handleReset,
-    state.boardState,
-  ]);
+  }, [handleComputerTurn, state.computerTurn, winner]);
 
   return (
     <div className='app-flex'>
@@ -178,7 +94,9 @@ function App() {
           </button>
         </div>
       ) : (
-        <div className='game-status-next-player'>{statusMessage()}</div>
+        <div className='game-status-next-player'>
+          {statusMessage(winner, state.boardState, state.xIsNext)}
+        </div>
       )}
 
       <div className='game-board'>
@@ -199,7 +117,7 @@ function App() {
               disabled={IsSquareDisabled}
               value={state.boardState[square]}
               type='button'
-              onClick={() => handleSquareClick(square, false)}
+              onClick={() => handleSquareClick(square, state.team)}
             >
               {state.boardState[square]}
             </button>
