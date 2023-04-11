@@ -132,9 +132,6 @@ function App() {
         handleReset();
       }, 2000);
     }
-  }, [winner, state.xIsNext, state.boardState, handleReset]);
-
-  useEffect(() => {
     if (state.computerTurn && winner !== null) {
       return;
     }
@@ -149,6 +146,8 @@ function App() {
     state.computerTurn,
     handleSquareClick,
     winner,
+    handleReset,
+    state.boardState,
   ]);
 
   return (
