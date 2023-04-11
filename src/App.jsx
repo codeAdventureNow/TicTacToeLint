@@ -54,12 +54,6 @@ const reducer = (state, action) => {
     case ACTIONS.HANDLE_RESET:
       return intitialState;
     case ACTIONS.CHOOSE_TEAM:
-      // setChooseTeam(false);
-
-      // if (value === 'O') {
-      //   setXIsNext(false);
-      //   setTeam('O');
-      // }
       return {
         ...state,
         chooseTeam: false,
