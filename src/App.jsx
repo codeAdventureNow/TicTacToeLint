@@ -22,24 +22,24 @@ function App() {
   }, [winner, state.xIsNext, state.boardState, handleReset]);
 
   const handleSquareClick = useCallback(
-    (i, computerChoose) => {
+    (index, computerChoose) => {
       const nextSquares = [...state.boardState];
 
-      const nextAvailableSquares = state.avaialableSquareNumbers.filter(
-        (square) => square !== i
+      const nextAvailableSquares = state.availableSquareNumbers.filter(
+        (square) => square !== index
       );
 
-      nextSquares[i] = state.xIsNext ? 'X' : 'O';
+      nextSquares[index] = state.xIsNext ? 'X' : 'O';
       dispatch({
         type: ACTIONS.HANDLE_TURN,
         payload: {
           boardState: nextSquares,
-          avaialableSquareNumbers: nextAvailableSquares,
+          availableSquareNumbers: nextAvailableSquares,
           computerTurn: !computerChoose,
         },
       });
     },
-    [state.avaialableSquareNumbers, state.boardState, state.xIsNext]
+    [state.availableSquareNumbers, state.boardState, state.xIsNext]
   );
 
   useEffect(() => {
@@ -48,12 +48,12 @@ function App() {
     }
     if (state.computerTurn) {
       setTimeout(() => {
-        const randomIndex = getRandomSquare(state.avaialableSquareNumbers);
+        const randomIndex = getRandomSquare(state.availableSquareNumbers);
         handleSquareClick(randomIndex, true);
       }, 1200);
     }
   }, [
-    state.avaialableSquareNumbers,
+    state.availableSquareNumbers,
     state.computerTurn,
     handleSquareClick,
     winner,

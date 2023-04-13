@@ -12,7 +12,7 @@ export const intitialState = {
   xIsNext: true,
   computerTurn: false,
   boardState: Array(9).fill(null),
-  avaialableSquareNumbers: allSquaresOpen,
+  availableSquareNumbers: allSquaresOpen,
 };
 
 export const reducer = (state, action) => {
@@ -30,12 +30,12 @@ export const reducer = (state, action) => {
       };
     }
     case ACTIONS.HANDLE_TURN: {
-      const { boardState, avaialableSquareNumbers, computerTurn } =
+      const { boardState, availableSquareNumbers, computerTurn } =
         action.payload;
       return {
         ...state,
         boardState,
-        avaialableSquareNumbers,
+        availableSquareNumbers,
         computerTurn,
         xIsNext: !state.xIsNext,
       };
