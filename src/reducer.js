@@ -19,27 +19,25 @@ export const reducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.HANDLE_RESET:
       return intitialState;
-    case ACTIONS.CHOOSE_TEAM:
-      // setChooseTeam(false);
-
-      // if (value === 'O') {
-      //   setXIsNext(false);
-      //   setTeam('O');
-      // }
+    case ACTIONS.CHOOSE_TEAM: {
+      const { team } = action.payload;
       return {
         ...state,
         chooseTeam: false,
-        team: action.payload.team,
+        team,
         // will xisNext be set to false if we choose 'O'
         xIsNext: action.payload.team === 'X',
       };
+    }
     case ACTIONS.HANDLE_TURN: {
+      const { boardState, avaialableSquareNumbers, computerTurn } =
+        action.payload;
       return {
         ...state,
-        boardState: action.payload.boardState,
+        boardState,
+        avaialableSquareNumbers,
+        computerTurn,
         xIsNext: !state.xIsNext,
-        avaialableSquareNumbers: action.payload.avaialableSquareNumbers,
-        computerTurn: action.payload.computerTurn,
       };
     }
 
