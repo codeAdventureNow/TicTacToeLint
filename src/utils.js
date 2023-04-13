@@ -29,12 +29,12 @@ export const calculateWinner = (squaresChosen) => {
   return null;
 };
 
-export function statusMessage(winner, boardState, xisNext) {
+export function statusMessage(winner, boardState, xIsNext) {
   if (winner) {
     return `Winner: ${winner}`;
   }
-  if (!state.boardState.includes(null)) {
+  if (!boardState.includes(null)) {
     return 'Tie Game';
   }
-  return `Next player: ${state.xIsNext ? 'X' : '0'}`;
+  return `Next player: ${xIsNext ? 'X' : '0'}`;
 }
