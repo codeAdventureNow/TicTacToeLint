@@ -1,36 +1,6 @@
 import { useCallback, useEffect, useReducer } from 'react';
+import { getRandomSquare, calculateWinner, statusMessage } from './utils';
 import './App.css';
-
-const getRandomSquare = (squareNumbers) => {
-  const randomIndex = Math.floor(Math.random() * squareNumbers.length);
-  const item = squareNumbers[randomIndex];
-  return item;
-};
-
-const calculateWinner = (squaresChosen) => {
-  const gameWinningLines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-    [2, 5, 8],
-    [1, 4, 7],
-    [0, 3, 6],
-  ];
-  for (let i = 0; i < gameWinningLines.length; i++) {
-    const [a, b, c] = gameWinningLines[i];
-    if (
-      squaresChosen[a] &&
-      squaresChosen[a] === squaresChosen[b] &&
-      squaresChosen[a] === squaresChosen[c]
-    ) {
-      return squaresChosen[a];
-    }
-  }
-
-  return null;
-};
 
 const ACTIONS = {
   HANDLE_RESET: 'HANDLE_RESET',
@@ -146,16 +116,6 @@ function App() {
     });
   };
 
-  function statusMessage() {
-    if (winner) {
-      return `Winner: ${winner}`;
-    }
-    if (!state.boardState.includes(null)) {
-      return 'Tie Game';
-    }
-    return `Next player: ${state.xIsNext ? 'X' : '0'}`;
-  }
-
   return (
     <div className='app-flex'>
       <h1 className='game-title'>
@@ -184,7 +144,9 @@ function App() {
           </button>
         </div>
       ) : (
-        <div className='game-status-next-player'>{statusMessage()}</div>
+        <div className='game-status-next-player'>
+          {statusMessage(winner, state.boardState, state.xIsNext)}
+        </div>
       )}
 
       <div className='game-board'>
