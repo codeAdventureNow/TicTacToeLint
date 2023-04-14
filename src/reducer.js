@@ -21,17 +21,18 @@ export const reducer = (state, action) => {
       return intitialState;
     case ACTIONS.CHOOSE_TEAM: {
       const { team } = action.payload;
+
       return {
         ...state,
         chooseTeam: false,
         team,
-        // will xisNext be set to false if we choose 'O'
         xIsNext: action.payload.team === 'X',
       };
     }
     case ACTIONS.HANDLE_TURN: {
       const { boardState, availableSquareNumbers, computerTurn } =
         action.payload;
+
       return {
         ...state,
         boardState,
