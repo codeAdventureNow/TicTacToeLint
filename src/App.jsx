@@ -19,6 +19,7 @@ function App() {
     });
   };
 
+  console.log({ state });
   const handleReset = useCallback(() => {
     dispatch({ type: ACTIONS.HANDLE_RESET });
   }, []);
@@ -117,7 +118,7 @@ function App() {
               disabled={IsSquareDisabled}
               value={state.boardState[square]}
               type='button'
-              onClick={() => handleSquareClick(square, false)}
+              onClick={() => handleSquareClick(square, state.team)}
             >
               {state.boardState[square]}
             </button>
