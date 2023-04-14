@@ -2,9 +2,8 @@ export const ACTIONS = {
   HANDLE_RESET: 'HANDLE_RESET',
   CHOOSE_TEAM: 'CHOOSE_TEAM',
   HANDLE_TURN: 'HANDLE_TURN',
+  NEW_HANDLE_TURN: 'NEW_HANDLE_TURN',
 };
-
-export const allSquaresOpen = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
 export const intitialState = {
   chooseTeam: true,
@@ -12,13 +11,13 @@ export const intitialState = {
   xIsNext: true,
   computerTurn: false,
   boardState: Array(9).fill(null),
-  availableSquareNumbers: allSquaresOpen,
 };
 
 export const reducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.HANDLE_RESET:
       return intitialState;
+
     case ACTIONS.CHOOSE_TEAM: {
       const { team } = action.payload;
 
@@ -26,18 +25,22 @@ export const reducer = (state, action) => {
         ...state,
         chooseTeam: false,
         team,
-        xIsNext: action.payload.team === 'X',
+        xIsNext: team === 'X',
       };
     }
-    case ACTIONS.HANDLE_TURN: {
-      const { boardState, availableSquareNumbers, computerTurn } =
-        action.payload;
+
+    case ACTIONS.NEW_HANDLE_TURN: {
+      const updatedBoardState = state.boardState.map((square, index) => {
+        if (index === action.payload.clickedSquare) {
+          return action.payload.team;
+        }
+        return square;
+      });
 
       return {
         ...state,
-        boardState,
-        availableSquareNumbers,
-        computerTurn,
+        boardState: updatedBoardState,
+        computerTurn: !state.computerTurn,
         xIsNext: !state.xIsNext,
       };
     }
