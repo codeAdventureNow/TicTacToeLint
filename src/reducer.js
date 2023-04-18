@@ -9,7 +9,6 @@ export const ACTIONS = {
 // extension - add an option for Player 2 to be human
 export const intitialState = {
   team: '',
-  xIsNext: true,
   computerTurn: false,
   boardState: Array(9).fill(null),
 };
@@ -25,7 +24,6 @@ export const reducer = (state, action) => {
       return {
         ...state,
         team,
-        xIsNext: team === 'X',
       };
     }
 
@@ -41,7 +39,6 @@ export const reducer = (state, action) => {
         ...state,
         boardState: updatedBoardState,
         computerTurn: !state.computerTurn,
-        xIsNext: !state.xIsNext,
       };
     }
 
