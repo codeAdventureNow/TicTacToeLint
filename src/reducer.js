@@ -4,6 +4,9 @@ export const ACTIONS = {
   HANDLE_TURN: 'HANDLE_TURN',
 };
 
+// remove xIsNext
+// remove chooseTeam state
+// extension - add an option for Player 2 to be human
 export const intitialState = {
   chooseTeam: true,
   team: '',

@@ -73,7 +73,7 @@ function App() {
         <span className='orange-text'>Tac </span>
         <span className='red-text'>Toe </span>
       </h1>
-      {state.chooseTeam ? (
+      {state.team === '' ? (
         <div>
           <h4 className='heading-choose-team'>Choose your team</h4>
           <button
