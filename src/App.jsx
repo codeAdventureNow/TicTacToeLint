@@ -19,14 +19,13 @@ function App() {
     });
   };
 
-  console.log({ state });
   const handleReset = useCallback(() => {
     dispatch({ type: ACTIONS.HANDLE_RESET });
   }, []);
 
   const handleSquareClick = useCallback((squareIndex, team) => {
     dispatch({
-      type: ACTIONS.NEW_HANDLE_TURN,
+      type: ACTIONS.HANDLE_TURN,
       payload: {
         clickedSquare: squareIndex,
         team,

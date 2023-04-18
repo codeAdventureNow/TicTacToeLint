@@ -2,7 +2,6 @@ export const ACTIONS = {
   HANDLE_RESET: 'HANDLE_RESET',
   CHOOSE_TEAM: 'CHOOSE_TEAM',
   HANDLE_TURN: 'HANDLE_TURN',
-  NEW_HANDLE_TURN: 'NEW_HANDLE_TURN',
 };
 
 export const intitialState = {
@@ -29,7 +28,7 @@ export const reducer = (state, action) => {
       };
     }
 
-    case ACTIONS.NEW_HANDLE_TURN: {
+    case ACTIONS.HANDLE_TURN: {
       const updatedBoardState = state.boardState.map((square, index) => {
         if (index === action.payload.clickedSquare) {
           return action.payload.team;
