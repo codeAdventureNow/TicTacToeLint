@@ -8,7 +8,6 @@ export const ACTIONS = {
 // remove chooseTeam state
 // extension - add an option for Player 2 to be human
 export const intitialState = {
-  chooseTeam: true,
   team: '',
   xIsNext: true,
   computerTurn: false,
@@ -25,7 +24,6 @@ export const reducer = (state, action) => {
 
       return {
         ...state,
-        chooseTeam: false,
         team,
         xIsNext: team === 'X',
       };

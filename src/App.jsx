@@ -102,7 +102,6 @@ function App() {
       <div className='game-board'>
         {allSquaresOpen.map((square) => {
           const IsSquareDisabled =
-            state.chooseTeam ||
             state.computerTurn ||
             state.boardState[square] !== null ||
             winner !== null;
@@ -124,7 +123,7 @@ function App() {
           );
         })}
       </div>
-      {!state.chooseTeam && (
+      {state.team && (
         <div className='flex-player-assignment'>
           <h5 className='heading-player-assignment'>
             You are team {state.team} vs. Computer{' '}
