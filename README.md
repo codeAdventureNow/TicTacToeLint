@@ -21,9 +21,9 @@ Initially, I thought creating a Tic Tac Toe app would be straightforward after c
 
 ## Getting Started
 
-1.  cd vite-project
-2.  npm install
-3.  npm run dev
-4.  Go to http://localhost:5173/
+
+1.  npm install
+2.  npm run dev
+3.  Go to http://localhost:5173/
 
 Check out the demo of [Tic Tac Toe](https://tic-tac-toe-lint.vercel.app/).
