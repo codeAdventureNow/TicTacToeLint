@@ -1,5 +1,5 @@
 # Tic Tac Toe 
-<br>
+
 Initially, I thought creating a Tic Tac Toe app would be straightforward after completing a React Calculator. However, I was mistaken. The complexity increased when I decided to implement a computer player. During the project, I had a breakthrough in working with reducers, simplifying functions, and utilizing booleans as state toggles. It was a valuable learning experience that enhanced my problem-solving skills and provided insights into state management. I'm proud of the progress made and the lessons learned.
 
 ## User Stories
