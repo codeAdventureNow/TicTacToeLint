@@ -14,9 +14,10 @@ Initially, I thought creating a Tic Tac Toe app would be straightforward after c
 ## Lessons Learned
 - Simplifying state management with a reducer
 
-- Using setInterval within a useEffect
+- How to have the computer randomly choose squares that gradually decrease with each move.
 
-- Refactoring a reducer into TypeScript with an interface
+- How to useCallback in conjunction with useEffect in React
+
 
 ## Getting Started
 
@@ -25,4 +26,4 @@ Initially, I thought creating a Tic Tac Toe app would be straightforward after c
 3.  npm run dev
 4.  Go to http://localhost:5173/
 
-Check out the demo of [Pomodoro Timer](https://pomodoro-ts-one.vercel.app/).
+Check out the demo of [Tic Tac Toe](https://tic-tac-toe-lint.vercel.app/).
